@@ -1,4 +1,3 @@
-using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 
 namespace OpenGlTesting
@@ -14,7 +13,11 @@ namespace OpenGlTesting
 
         public void LinkToVao(int location, int size, VBO vbo)
         {
-
+            Bind();
+            vbo.Bind();
+            GL.VertexAttribPointer(location, size, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexAttribArray(location);
+            Unbind();
         }
 
         public void Bind()
