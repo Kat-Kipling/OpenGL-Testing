@@ -51,14 +51,30 @@ namespace OpenGlTesting
             new Vector3(-0.5f, -0.5f, -0.5f), // bottomleft vert
         };
 
+        List<uint> indices = new List<uint>
+        {
+            0,1,2,
+            2,3,0,
 
+            4,5,6,
+            6,7,4,
+
+            8,9,10,
+            10,11,8,
+
+            12,13,14,
+            14,15,12,
+
+            16,17,18,
+            18,19,16,
+
+            20,21,22,
+            22,23,20
+        };
 
         EntityLoader loader = new EntityLoader();
         Renderer renderer = new Renderer();
         Model model;
-
-
-
         public Game(int width, int height) : base(GameWindowSettings.Default, NativeWindowSettings.Default)
         {
             this.CenterWindow(new Vector2i(width, height));
@@ -71,16 +87,8 @@ namespace OpenGlTesting
         {
             base.OnLoad();
 
-            Vao = new VAO();
-            VBO vbo = new VBO(vertices);
-            VBO uvVBO = new VBO(texCoords);
-            
-            Vao.LinkToVao(1, 2, uvVBO);
-            Vao.LinkToVao(0, 3, vbo);
-            Ibo = new IBO(indices);
             model = loader.LoadToVao(vertices, indices);
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
-            Texture = new Texture("gold.jpg");
 
             Camera = new Camera(ScreenWidth, ScreenHeight, Vector3.Zero);
             CursorState = CursorState.Grabbed;
@@ -102,31 +110,25 @@ namespace OpenGlTesting
             GL.ClearColor(0f, 0.4f, 0.7f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            Shaders.Bind();
-            Vao.Bind();
-            Ibo.Bind();
-            Texture.Bind();
-
-            Matrix4 model = Matrix4.Identity;
+            //Matrix4 model = Matrix4.Identity;
             Matrix4 view = Camera.GetViewMatrix();
             Matrix4 projection = Camera.GetProjectionMatrix();
 
-            model = Matrix4.CreateRotationY(yRot);
-            yRot += 0.001f;
+            //model = Matrix4.CreateRotationY(yRot);
+            //yRot += 0.001f;
             
             Matrix4 translation = Matrix4.CreateTranslation(0f, 0f, -3f);
 
-            model *= translation;
+            //model *= translation;
 
-            int modelLocation = GL.GetUniformLocation(Shaders.Id, "model");
+            //int modelLocation = GL.GetUniformLocation(Shaders.Id, "model");
             int viewLocation = GL.GetUniformLocation(Shaders.Id, "view");
             int projectionLocation = GL.GetUniformLocation(Shaders.Id, "projection");
 
-            GL.UniformMatrix4(modelLocation, true, ref model);
+            //GL.UniformMatrix4(modelLocation, true, ref model);
             GL.UniformMatrix4(viewLocation, true, ref view);
             GL.UniformMatrix4(projectionLocation, true, ref projection);
 
-            GL.DrawElements(PrimitiveType.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
             renderer.RenderModel(model);
             Shaders.Bind();
         
