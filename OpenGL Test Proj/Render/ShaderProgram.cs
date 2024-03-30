@@ -4,7 +4,7 @@ namespace OpenGlTesting
 {
     internal class ShaderProgram : IDisposable
     {
-        int Id; 
+        public int Id {get;}
 
         public ShaderProgram(string vertexShaderPath, string fragmentShaderPath)
         {

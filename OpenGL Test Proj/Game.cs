@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace OpenGlTesting
 {
@@ -12,19 +13,62 @@ namespace OpenGlTesting
         int ScreenHeight;
         VAO Vao;
         IBO Ibo;
+        Camera Camera;
         ShaderProgram Shaders;
+        float yRot = 0;
         List<Vector3> vertices = new List<Vector3>
         {
-            new Vector3(-0.5f, 0.5f, 0f),
-            new Vector3(0.5f, 0.5f, 0f),
-            new Vector3(0.5f, -0.5f, 0f),
-            //new Vector3(-0.5f, -0.5f, 0f)
+            // front face
+            new Vector3(-0.5f, 0.5f, 0.5f), // topleft vert
+            new Vector3(0.5f, 0.5f, 0.5f), // topright vert
+            new Vector3(0.5f, -0.5f, 0.5f), // bottomright vert
+            new Vector3(-0.5f, -0.5f, 0.5f), // bottomleft vert
+            // right face
+            new Vector3(0.5f, 0.5f, 0.5f), // topleft vert
+            new Vector3(0.5f, 0.5f, -0.5f), // topright vert
+            new Vector3(0.5f, -0.5f, -0.5f), // bottomright vert
+            new Vector3(0.5f, -0.5f, 0.5f), // bottomleft vert
+            // back face
+            new Vector3(0.5f, 0.5f, -0.5f), // topleft vert
+            new Vector3(-0.5f, 0.5f, -0.5f), // topright vert
+            new Vector3(-0.5f, -0.5f, -0.5f), // bottomright vert
+            new Vector3(0.5f, -0.5f, -0.5f), // bottomleft vert
+            // left face
+            new Vector3(-0.5f, 0.5f, -0.5f), // topleft vert
+            new Vector3(-0.5f, 0.5f, 0.5f), // topright vert
+            new Vector3(-0.5f, -0.5f, 0.5f), // bottomright vert
+            new Vector3(-0.5f, -0.5f, -0.5f), // bottomleft vert
+            // top face
+            new Vector3(-0.5f, 0.5f, -0.5f), // topleft vert
+            new Vector3(0.5f, 0.5f, -0.5f), // topright vert
+            new Vector3(0.5f, 0.5f, 0.5f), // bottomright vert
+            new Vector3(-0.5f, 0.5f, 0.5f), // bottomleft vert
+            // bottom face
+            new Vector3(-0.5f, -0.5f, 0.5f), // topleft vert
+            new Vector3(0.5f, -0.5f, 0.5f), // topright vert
+            new Vector3(0.5f, -0.5f, -0.5f), // bottomright vert
+            new Vector3(-0.5f, -0.5f, -0.5f), // bottomleft vert
         };
 
         List<uint> indices = new List<uint>
         {
-            0, 1, 2,
-            //2, 3, 0
+            0,1,2,
+            2,3,0,
+
+            4,5,6,
+            6,7,4,
+
+            8,9,10,
+            10,11,8,
+
+            12,13,14,
+            14,15,12,
+
+            16,17,18,
+            18,19,16,
+
+            20,21,22,
+            22,23,20
         };
 
         public Game(int width, int height) : base(GameWindowSettings.Default, NativeWindowSettings.Default)
@@ -45,6 +89,10 @@ namespace OpenGlTesting
             Vao.LinkToVao(0, 3, vbo);
             Ibo = new IBO(indices);
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
+
+            //GL.Enable(EnableCap.DepthTest);
+            Camera = new Camera(ScreenWidth, ScreenHeight, Vector3.Zero);
+            CursorState = CursorState.Grabbed;
         }
 
         // On window size change
@@ -66,6 +114,25 @@ namespace OpenGlTesting
             Ibo.Bind();
             Shaders.Bind();
 
+            Matrix4 model = Matrix4.Identity;
+            Matrix4 view = Camera.GetViewMatrix();
+            Matrix4 projection = Camera.GetProjectionMatrix();
+
+            model = Matrix4.CreateRotationY(yRot);
+            yRot += 0.001f;
+            
+            Matrix4 translation = Matrix4.CreateTranslation(0f, 0f, -3f);
+
+            model *= translation;
+
+            int modelLocation = GL.GetUniformLocation(Shaders.Id, "model");
+            int viewLocation = GL.GetUniformLocation(Shaders.Id, "view");
+            int projectionLocation = GL.GetUniformLocation(Shaders.Id, "projection");
+
+            GL.UniformMatrix4(modelLocation, true, ref model);
+            GL.UniformMatrix4(viewLocation, true, ref view);
+            GL.UniformMatrix4(projectionLocation, true, ref projection);
+
             GL.DrawElements(PrimitiveType.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
         
             Context.SwapBuffers(); // Swap draw window to display window
@@ -77,7 +144,10 @@ namespace OpenGlTesting
         // On frame update - logic for game
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
+            MouseState mouse = MouseState;
+            KeyboardState keybIn = KeyboardState;
             base.OnUpdateFrame(args);
+            Camera.Update(keybIn, mouse, args);
         }
 
         // Called on close
