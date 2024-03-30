@@ -12,7 +12,9 @@ namespace OpenGlTesting
         int ScreenHeight;
         VAO Vao;
         IBO Ibo;
+        Camera Camera;
         ShaderProgram Shaders;
+        float yRot = 0;
         List<Vector3> vertices = new List<Vector3>
         {
             new Vector3(-0.5f, 0.5f, 0f),
@@ -45,6 +47,8 @@ namespace OpenGlTesting
             Vao.LinkToVao(0, 3, vbo);
             Ibo = new IBO(indices);
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
+
+            Camera = new Camera(ScreenWidth, ScreenHeight, Vector3.Zero);
         }
 
         // On window size change
@@ -65,6 +69,25 @@ namespace OpenGlTesting
             Vao.Bind();
             Ibo.Bind();
             Shaders.Bind();
+
+            Matrix4 model = Matrix4.Identity;
+            Matrix4 view = Camera.GetViewMatrix();
+            Matrix4 projection = Camera.GetProjectionMatrix();
+
+            model = Matrix4.CreateRotationY(yRot);
+            yRot += 0.001f;
+            
+            Matrix4 translation = Matrix4.CreateTranslation(0f, 0f, -3f);
+
+            model *= translation;
+
+            int modelLocation = GL.GetUniformLocation(Shaders.Id, "model");
+            int viewLocation = GL.GetUniformLocation(Shaders.Id, "view");
+            int projectionLocation = GL.GetUniformLocation(Shaders.Id, "projection");
+
+            GL.UniformMatrix4(modelLocation, true, ref model);
+            GL.UniformMatrix4(viewLocation, true, ref view);
+            GL.UniformMatrix4(projectionLocation, true, ref projection);
 
             GL.DrawElements(PrimitiveType.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
         
