@@ -11,7 +11,7 @@ namespace OpenGlTesting
             GL.BindVertexArray(Id);
         }
 
-        public void LinkToVao(int location, int size, VBO vbo)
+        public void LinkVbo(int location, int size, VBO vbo)
         {
             Bind();
             vbo.Bind();

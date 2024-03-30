@@ -42,7 +42,7 @@ namespace OpenGlTesting
             Vao = new VAO();
             VBO vbo = new VBO(vertices);
 
-            Vao.LinkToVao(0, 3, vbo);
+            Vao.LinkVbo(0, 3, vbo);
             Ibo = new IBO(indices);
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
         }
