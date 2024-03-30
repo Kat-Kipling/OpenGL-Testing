@@ -4,6 +4,6 @@ namespace OpenGlTesting
 {
     internal class Texture
     {
-        
+        public int Id;
     }
 }
