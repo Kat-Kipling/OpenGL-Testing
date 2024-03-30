@@ -3,7 +3,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace OpenGlTesting
 {
-    internal class VBO
+    internal class VBO : IDisposable
     {
         public int Id;
         
@@ -30,7 +30,7 @@ namespace OpenGlTesting
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }    
 
-        public void Delete()    
+        public void Dispose()    
         {
             GL.DeleteBuffer(Id);
         }
