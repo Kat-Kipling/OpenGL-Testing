@@ -16,6 +16,7 @@ namespace OpenGlTesting
         Camera Camera;
         ShaderProgram Shaders;
         float yRot = 0;
+        Texture Texture;
         List<Vector3> vertices = new List<Vector3>
         {
             // front face
@@ -71,6 +72,39 @@ namespace OpenGlTesting
             22,23,20
         };
 
+        List<Vector2> texCoords = new List<Vector2>()
+        {
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+            
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+        };
+
         public Game(int width, int height) : base(GameWindowSettings.Default, NativeWindowSettings.Default)
         {
             this.CenterWindow(new Vector2i(width, height));
@@ -85,10 +119,13 @@ namespace OpenGlTesting
 
             Vao = new VAO();
             VBO vbo = new VBO(vertices);
-
+            VBO uvVBO = new VBO(texCoords);
+            
+            Vao.LinkToVao(1, 2, uvVBO);
             Vao.LinkToVao(0, 3, vbo);
             Ibo = new IBO(indices);
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
+            Texture = new Texture("gold.jpg");
 
             //GL.Enable(EnableCap.DepthTest);
             Camera = new Camera(ScreenWidth, ScreenHeight, Vector3.Zero);
@@ -110,9 +147,10 @@ namespace OpenGlTesting
             GL.ClearColor(0f, 0.4f, 0.7f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
+            Shaders.Bind();
             Vao.Bind();
             Ibo.Bind();
-            Shaders.Bind();
+            Texture.Bind();
 
             Matrix4 model = Matrix4.Identity;
             Matrix4 view = Camera.GetViewMatrix();
