@@ -13,6 +13,11 @@ namespace OpenGlTesting
         private float SENSITIVITY = 80f;
 
         public Vector3 Position {get; set;}
+        private float pitch;
+        private float yaw = -90.0f;
+        private bool firstMove = true;
+        public Vector2 lastPos {get; set;}
+        
         Vector3 right = Vector3.UnitX;
         Vector3 up = Vector3.UnitY;
         Vector3 front = -Vector3.UnitZ;
@@ -35,7 +40,14 @@ namespace OpenGlTesting
 
         private void UpdateVectors()
         {
+            // Trigonometry :(
+            front.X = MathF.Cos(MathHelper.DegreesToRadians(pitch)) * MathF.Cos(MathHelper.DegreesToRadians(yaw));
+            front.Y = MathF.Sin(MathHelper.DegreesToRadians(pitcha));
+            front.Z = MathF.Cos(MathHelper.DegreesToRadians(pitch)) * MathF.Sin(MathHelper.DegreesToRadians(yaw));
 
+            front = Vector3.Normalize(front);
+            right = Vector3.Normalize(Vector3.Cross(front, Vector3.UnitY));
+            up = Vector3.Normalize(Vector3.Cross(right, front));
         }
 
         public void InputController(KeyboardState keybIn, MouseState mouseIn, FrameEventArgs eventArgs)
@@ -63,7 +75,23 @@ namespace OpenGlTesting
             if(keybIn.IsKeyDown(Keys.LeftControl ))
             {
                 Position -= up * SPEED * (float)eventArgs.Time;
-            }  
+            }
+
+            if(firstMove)
+            {
+                lastPos = new Vector2(mouseIn.X, mouseIn.Y);
+                firstMove = false;
+            }
+            else
+            {
+                var deltaX = mouseIn.X - lastPos.X;
+                var deltaY = mouseIn.Y - lastPos.Y;
+                lastPos = new Vector2(mouseIn.X, mouseIn.Y);
+
+                yaw += deltaX * SENSITIVITY * (float)eventArgs.Time;
+                pitch -= deltaY * SENSITIVITY * (float)eventArgs.Time;
+            }
+            UpdateVectors();
         }
 
         public void Update(KeyboardState keybIn, MouseState mouseIn, FrameEventArgs eventArgs)
