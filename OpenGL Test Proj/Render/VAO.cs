@@ -5,6 +5,7 @@ namespace OpenGlTesting
     internal class VAO : IDisposable
     {
         public int Id;
+        public int VertexCount{get;}
         public VAO()
         {
             Id = GL.GenVertexArray();

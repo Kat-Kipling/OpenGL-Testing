@@ -18,14 +18,19 @@ namespace OpenGlTesting
             new Vector3(-0.5f, 0.5f, 0f),
             new Vector3(0.5f, 0.5f, 0f),
             new Vector3(0.5f, -0.5f, 0f),
-            //new Vector3(-0.5f, -0.5f, 0f)
+            new Vector3(-0.5f, -0.5f, 0f)
         };
 
         List<uint> indices = new List<uint>
         {
             0, 1, 2,
-            //2, 3, 0
+            2, 3, 0
         };
+        EntityLoader loader = new EntityLoader();
+        Renderer renderer = new Renderer();
+        Model model;
+
+
 
         public Game(int width, int height) : base(GameWindowSettings.Default, NativeWindowSettings.Default)
         {
@@ -39,11 +44,7 @@ namespace OpenGlTesting
         {
             base.OnLoad();
 
-            Vao = new VAO();
-            VBO vbo = new VBO(vertices);
-
-            Vao.LinkVbo(0, 3, vbo);
-            Ibo = new IBO(indices);
+            model = loader.LoadToVao(vertices, indices);
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
         }
 
@@ -62,11 +63,8 @@ namespace OpenGlTesting
             GL.ClearColor(0f, 0.4f, 0.7f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            Vao.Bind();
-            Ibo.Bind();
+            renderer.RenderModel(model);
             Shaders.Bind();
-
-            GL.DrawElements(PrimitiveType.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
         
             Context.SwapBuffers(); // Swap draw window to display window
 
@@ -84,9 +82,7 @@ namespace OpenGlTesting
         protected override void OnUnload()
         {
             base.OnUnload();
-
-            Vao.Dispose();
-            Ibo.Delete();
+            loader.Dispose();
             Shaders.Dispose();
         }
     }
