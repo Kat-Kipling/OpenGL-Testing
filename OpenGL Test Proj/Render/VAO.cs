@@ -5,13 +5,14 @@ namespace OpenGlTesting
     internal class VAO : IDisposable
     {
         public int Id;
+        public int VertexCount{get;}
         public VAO()
         {
             Id = GL.GenVertexArray();
             GL.BindVertexArray(Id);
         }
 
-        public void LinkToVao(int location, int size, VBO vbo)
+        public void LinkVbo(int location, int size, VBO vbo)
         {
             Bind();
             vbo.Bind();

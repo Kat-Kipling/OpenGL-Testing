@@ -51,59 +51,13 @@ namespace OpenGlTesting
             new Vector3(-0.5f, -0.5f, -0.5f), // bottomleft vert
         };
 
-        List<uint> indices = new List<uint>
-        {
-            0,1,2,
-            2,3,0,
 
-            4,5,6,
-            6,7,4,
 
-            8,9,10,
-            10,11,8,
+        EntityLoader loader = new EntityLoader();
+        Renderer renderer = new Renderer();
+        Model model;
 
-            12,13,14,
-            14,15,12,
 
-            16,17,18,
-            18,19,16,
-
-            20,21,22,
-            22,23,20
-        };
-
-        List<Vector2> texCoords = new List<Vector2>()
-        {
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-            
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-        };
 
         public Game(int width, int height) : base(GameWindowSettings.Default, NativeWindowSettings.Default)
         {
@@ -124,6 +78,7 @@ namespace OpenGlTesting
             Vao.LinkToVao(1, 2, uvVBO);
             Vao.LinkToVao(0, 3, vbo);
             Ibo = new IBO(indices);
+            model = loader.LoadToVao(vertices, indices);
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
             Texture = new Texture("gold.jpg");
 
@@ -172,6 +127,8 @@ namespace OpenGlTesting
             GL.UniformMatrix4(projectionLocation, true, ref projection);
 
             GL.DrawElements(PrimitiveType.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
+            renderer.RenderModel(model);
+            Shaders.Bind();
         
             Context.SwapBuffers(); // Swap draw window to display window
 
@@ -192,9 +149,7 @@ namespace OpenGlTesting
         protected override void OnUnload()
         {
             base.OnUnload();
-
-            Vao.Dispose();
-            Ibo.Delete();
+            loader.Dispose();
             Shaders.Dispose();
         }
     }
