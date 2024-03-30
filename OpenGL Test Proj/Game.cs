@@ -90,7 +90,9 @@ namespace OpenGlTesting
             Ibo = new IBO(indices);
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
 
+            GL.Enable(EnableCap.DepthTest);
             Camera = new Camera(ScreenWidth, ScreenHeight, Vector3.Zero);
+            CursorState = CursorState.Grabbed;
         }
 
         // On window size change
