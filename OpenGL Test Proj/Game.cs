@@ -11,16 +11,20 @@ namespace OpenGlTesting
         int ScreenWidth;
         int ScreenHeight;
         VAO Vao;
+        IBO Ibo;
+        ShaderProgram Shaders;
         List<Vector3> vertices = new List<Vector3>
         {
-            new Vector3(0f, 0.5f, 0f),
-            new Vector3(-0.5f, -0.5f, 0f),
-            new Vector3(0.5f, 0.5f, 0f)
+            new Vector3(-0.5f, 0.5f, 0f),
+            new Vector3(0.5f, 0.5f, 0f),
+            new Vector3(0.5f, -0.5f, 0f),
+            //new Vector3(-0.5f, -0.5f, 0f)
         };
 
         List<uint> indices = new List<uint>
         {
-            0, 1, 2
+            0, 1, 2,
+            //2, 3, 0
         };
 
         public Game(int width, int height) : base(GameWindowSettings.Default, NativeWindowSettings.Default)
@@ -34,10 +38,13 @@ namespace OpenGlTesting
         protected override void OnLoad()
         {
             base.OnLoad();
+
             Vao = new VAO();
             VBO vbo = new VBO(vertices);
+
             Vao.LinkToVao(0, 3, vbo);
-            IBO ibo = new IBO(indices);
+            Ibo = new IBO(indices);
+            Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
         }
 
         // On window size change
@@ -52,10 +59,17 @@ namespace OpenGlTesting
         // On frame rendered - for shaders etc
         protected override void OnRenderFrame(FrameEventArgs args)
         {
-            GL.ClearColor(1.0f, 0.4f, 0.7f, 1.0f);
+            GL.ClearColor(0f, 0.4f, 0.7f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
+            Vao.Bind();
+            Ibo.Bind();
+            Shaders.Bind();
+
+            GL.DrawElements(PrimitiveType.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
+        
             Context.SwapBuffers(); // Swap draw window to display window
+
 
             base.OnRenderFrame(args);
         }
@@ -70,6 +84,10 @@ namespace OpenGlTesting
         protected override void OnUnload()
         {
             base.OnUnload();
+
+            Vao.Dispose();
+            Ibo.Delete();
+            Shaders.Dispose();
         }
     }
 }
