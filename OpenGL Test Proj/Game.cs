@@ -1,9 +1,8 @@
 using System;
-using OpenTK.Graphics.ES11;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace OpenGlTesting
 {
@@ -11,6 +10,19 @@ namespace OpenGlTesting
     {
         int ScreenWidth;
         int ScreenHeight;
+        VAO Vao;
+        List<Vector3> vertices = new List<Vector3>
+        {
+            new Vector3(0f, 0.5f, 0f),
+            new Vector3(-0.5f, -0.5f, 0f),
+            new Vector3(0.5f, 0.5f, 0f)
+        };
+
+        List<uint> indices = new List<uint>
+        {
+            0, 1, 2
+        };
+
         public Game(int width, int height) : base(GameWindowSettings.Default, NativeWindowSettings.Default)
         {
             this.CenterWindow(new Vector2i(width, height));
@@ -22,6 +34,10 @@ namespace OpenGlTesting
         protected override void OnLoad()
         {
             base.OnLoad();
+            Vao = new VAO();
+            VBO vbo = new VBO(vertices);
+            Vao.LinkToVao(0, 3, vbo);
+            IBO ibo = new IBO(indices);
         }
 
         // On window size change
