@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace OpenGlTesting
 {
@@ -100,7 +101,10 @@ namespace OpenGlTesting
         // On frame update - logic for game
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
+            MouseState mouse = MouseState;
+            KeyboardState keybIn = KeyboardState;
             base.OnUpdateFrame(args);
+            Camera.Update(keybIn, mouse, args);
         }
 
         // Called on close

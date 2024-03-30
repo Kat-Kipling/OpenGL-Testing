@@ -40,7 +40,30 @@ namespace OpenGlTesting
 
         public void InputController(KeyboardState keybIn, MouseState mouseIn, FrameEventArgs eventArgs)
         {
-
+            if(keybIn.IsKeyDown(Keys.W))
+            {
+                Position += front * SPEED * (float)eventArgs.Time;
+            }
+            if(keybIn.IsKeyDown(Keys.A))
+            {
+                Position -= right * SPEED * (float)eventArgs.Time;
+            }
+            if(keybIn.IsKeyDown(Keys.S))
+            {
+                Position -= front * SPEED * (float)eventArgs.Time;
+            }
+            if(keybIn.IsKeyDown(Keys.D))
+            {
+                Position += right * SPEED * (float)eventArgs.Time;
+            }
+            if(keybIn.IsKeyDown(Keys.Space))
+            {
+                Position += up * SPEED * (float)eventArgs.Time;
+            }
+            if(keybIn.IsKeyDown(Keys.LeftControl ))
+            {
+                Position -= up * SPEED * (float)eventArgs.Time;
+            }  
         }
 
         public void Update(KeyboardState keybIn, MouseState mouseIn, FrameEventArgs eventArgs)
