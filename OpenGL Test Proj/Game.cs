@@ -127,9 +127,9 @@ namespace OpenGlTesting
             Shaders = new ShaderProgram("Shaders/Default.vert", "Shaders/Default.frag");
             Texture = new Texture("gold.jpg");
 
-            //GL.Enable(EnableCap.DepthTest);
             Camera = new Camera(ScreenWidth, ScreenHeight, Vector3.Zero);
             CursorState = CursorState.Grabbed;
+            GL.Enable(EnableCap.DepthTest);
         }
 
         // On window size change
@@ -145,7 +145,7 @@ namespace OpenGlTesting
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             GL.ClearColor(0f, 0.4f, 0.7f, 1.0f);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Shaders.Bind();
             Vao.Bind();
