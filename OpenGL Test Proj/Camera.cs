@@ -40,9 +40,18 @@ namespace OpenGlTesting
 
         private void UpdateVectors()
         {
+            if(pitch > 89.0f)
+            {
+                pitch = 89.0f;
+            }
+            if(pitch < -89.0f)
+            {
+                pitch = -89.0f;
+            }
+
             // Trigonometry :(
             front.X = MathF.Cos(MathHelper.DegreesToRadians(pitch)) * MathF.Cos(MathHelper.DegreesToRadians(yaw));
-            front.Y = MathF.Sin(MathHelper.DegreesToRadians(pitcha));
+            front.Y = MathF.Sin(MathHelper.DegreesToRadians(pitch));
             front.Z = MathF.Cos(MathHelper.DegreesToRadians(pitch)) * MathF.Sin(MathHelper.DegreesToRadians(yaw));
 
             front = Vector3.Normalize(front);
