@@ -3,9 +3,9 @@ using OpenTK.Mathematics;
 
 namespace OpenGlTesting
 {
-    internal class ModelLoader
+    internal class FileLoader
     {
-        public static Model LoadModelFromObj(string filename, EntityLoader loader)
+        public static Model LoadModelFromObj(string filename, ModelLoader loader)
         {
             string? line;
             List<Vector3> vertices = new List<Vector3>();
